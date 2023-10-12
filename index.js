@@ -2,7 +2,7 @@
 
 let board;
 let boardWidth = 360;
-let boardHeight = 640;
+let boardHeight = 620;
 let context;
 
 /* Bird */
@@ -36,6 +36,10 @@ let gravity = 0.4;
 
 let gameOver = false;
 let score = 0;
+
+/*highscore*/
+let highScore = 0;
+
 /*drawing the board */
 window.onload = function () {
   board = document.getElementById("board");
@@ -105,8 +109,14 @@ function update() {
   context.fillText(score, 5, 45);
 
   if (gameOver) {
-    context.fillText("GAME OVER", 5, 90);
-    context.fillText("Press up Arrow to play Again", 5, 150);
+    context.fillText("High Score: " + getHighScore(), 5, 85);
+    context.fillText("GAME OVER", 5, 120);
+    context.fillText("Press up Arrow to play Again", 5, 180);
+  }
+
+  if (score > highScore) {
+    highScore = score;
+    saveHighScore();
   }
 }
 
@@ -172,4 +182,34 @@ function detectCollision(a, b) {
     a.y < b.y + b.height &&
     a.y + a.height > b.y
   );
+}
+
+//Highscore
+// Function to save the high score
+function saveHighScore(score) {
+  // Check if the user's browser supports localStorage
+  if (typeof Storage !== "undefined") {
+    // Use localStorage to store the high score
+    localStorage.setItem("highScore", score);
+  } else {
+    // If the browser doesn't support localStorage, handle the error accordingly
+    console.log("Sorry, your browser does not support local storage.");
+  }
+}
+
+// Function to retrieve the high score
+function saveHighScore() {
+  if (typeof Storage !== "undefined") {
+    localStorage.setItem("highScore", highScore);
+  }
+}
+
+function getHighScore() {
+  if (typeof Storage !== "undefined") {
+    const storedHighScore = localStorage.getItem("highScore");
+    if (storedHighScore !== null) {
+      return parseInt(storedHighScore);
+    }
+  }
+  return 0; // Default value if high score is not found
 }
